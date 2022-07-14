@@ -116,6 +116,10 @@ public class FileLink implements Serializable {
     return filename;
   }
 
+  public String getKey() {
+    return key;
+  }
+
   /**
    * Returns the content of a file.
    *
