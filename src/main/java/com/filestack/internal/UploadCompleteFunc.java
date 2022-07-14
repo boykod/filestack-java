@@ -57,7 +57,7 @@ public class UploadCompleteFunc implements Callable<Prog> {
             response.getUrl(),
             response.getMimetype(),
             (int)response.getSize(),
-            params.get("store_container").toString(),
+            response.getContainer(),
             response.getFilename());
 
     long endTime = System.currentTimeMillis() / 1000;

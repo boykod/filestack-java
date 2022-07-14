@@ -9,6 +9,7 @@ public class CompleteResponse {
   private long size;
   private String mimetype;
   private String key;
+  private String container;
 
   public String getUrl() {
     return url;
@@ -32,5 +33,9 @@ public class CompleteResponse {
 
   public String getKey() {
     return key;
+  }
+
+  public String getContainer() {
+    return container;
   }
 }
