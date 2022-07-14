@@ -106,7 +106,7 @@ public class Client implements Serializable {
    * @param handle - a unique reference to a file uploaded through our API
    */
   public FileLink fileLink(String handle) {
-    return new FileLink(config, cdnService, baseService, handle);
+    return new FileLink(config, cdnService, baseService, handle, "", "", "", 0, "", "");
   }
 
   /**
@@ -205,7 +205,17 @@ public class Client implements Serializable {
     JsonElement responseJson = response.getData().get(providerName);
     Gson gson = new Gson();
     CloudStoreResponse storeInfo = gson.fromJson(responseJson, CloudStoreResponse.class);
-    return new FileLink(config, cdnService, baseService, storeInfo.getHandle());
+    return new FileLink(
+            config,
+            cdnService,
+            baseService,
+            storeInfo.getHandle(),
+            "",
+            storeInfo.getUrl(),
+            storeInfo.getMimetype(),
+            (int)storeInfo.getSize(),
+            options.getAsJson().get("container").getAsString(),
+            storeInfo.getFilename());
   }
 
   /**

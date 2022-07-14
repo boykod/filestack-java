@@ -33,7 +33,14 @@ import java.util.concurrent.Callable;
 /** References and performs operations on an individual file. */
 public class FileLink implements Serializable {
   protected final Config config;
+
   protected final String handle;
+  protected final String key;
+  protected final String url;
+  protected final String mimeType;
+  protected final int size;
+  protected final String container;
+  protected final String filename;
 
   private final CdnService cdnService;
   private final BaseService baseService;
@@ -45,18 +52,48 @@ public class FileLink implements Serializable {
    *     This constructor is scheduled to be removed in version 1.0.0.
    */
   @Deprecated
-  public FileLink(Config config, String handle) {
+  public FileLink(Config config,
+                  String handle,
+                  String key,
+                  String url,
+                  String mimeType,
+                  int size,
+                  String container,
+                  String filename) {
     this.config = config;
     this.handle = handle;
     this.cdnService = Networking.getCdnService();
     this.baseService = Networking.getBaseService();
+
+    this.key = key;
+    this.url = url;
+    this.mimeType = mimeType;
+    this.size = size;
+    this.container = container;
+    this.filename = filename;
   }
 
-  FileLink(Config config, CdnService cdnService, BaseService baseService, String handle) {
+  FileLink(Config config,
+           CdnService cdnService,
+           BaseService baseService,
+           String handle,
+           String key,
+           String url,
+           String mimeType,
+           int size,
+           String container,
+           String filename) {
     this.config = config;
     this.handle = handle;
     this.cdnService = cdnService;
     this.baseService = baseService;
+
+    this.key = key;
+    this.url = url;
+    this.mimeType = mimeType;
+    this.size = size;
+    this.container = container;
+    this.filename = filename;
   }
 
   /**

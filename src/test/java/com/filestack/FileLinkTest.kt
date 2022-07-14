@@ -41,7 +41,7 @@ class FileLinkTest {
         val file = tempFile(postfix = ".txt").apply { write("some text") }
         server.enqueue(MockResponse())
 
-        val fileLink = FileLink(config, cdnService, baseService, "handle")
+        val fileLink = FileLink(config, cdnService, baseService, "handle", "", "", "", 0, "", "")
         fileLink.overwrite(file.path)
 
         server.takeRequest().assertThat {
@@ -55,7 +55,7 @@ class FileLinkTest {
     fun `test overwrite - throws on http errors`() {
         val file = tempFile(postfix = ".txt").apply { write("some text") }
         server.enqueue(MockResponse().setResponseCode(403).setBody("Invalid Request"))
-        val fileLink = FileLink(config, cdnService, baseService, "handle")
+        val fileLink = FileLink(config, cdnService, baseService, "handle", "", "", "", 0, "", "")
 
         expectedException.expect(HttpException::class.java)
         expectedException.expectMessage("Invalid Request")
@@ -68,7 +68,7 @@ class FileLinkTest {
     fun `test delete`() {
         server.enqueue(MockResponse())
 
-        val fileLink = FileLink(config, cdnService, baseService, "handle")
+        val fileLink = FileLink(config, cdnService, baseService, "handle", "", "", "", 0, "", "")
         fileLink.delete()
 
         server.takeRequest().assertThat {
@@ -85,7 +85,7 @@ class FileLinkTest {
         expectedException.expectMessage("Invalid Request")
         expectedException.expect(hasCode(403))
 
-        val fileLink = FileLink(config, cdnService, baseService, "handle")
+        val fileLink = FileLink(config, cdnService, baseService, "handle", "", "", "", 0, "", "")
         fileLink.delete()
 
     }

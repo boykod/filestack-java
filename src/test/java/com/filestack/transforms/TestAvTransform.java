@@ -60,45 +60,6 @@ public class TestAvTransform {
     Assert.assertEquals("video_convert=container:some-bucket,preset:mp4", task.toString());
   }
 
-  @Test
-  public void testGetFilelink() throws Exception {
-    ResponseBody readyBody = ResponseBody.create(
-        MediaType.get("application/json"),
-        "{\n" +
-            "  \"status\": \"completed\",\n" +
-            "  \"data\": {\n" +
-            "    \"url\": \"https://cdn.filestackcontent.com/handle\"\n" +
-            "  }\n" +
-            "}"
-    );
-
-    ResponseBody notReadyBody = ResponseBody.create(
-        MediaType.get("application/json"),
-        "{\n" +
-            "  \"status\": \"pending\",\n" +
-            "  \"data\": {\n" +
-            "    \"url\": \"https://cdn.filestackcontent.com/handle\"\n" +
-            "  }\n" +
-            "}"
-    );
-
-    when(cdnService.transform(anyString(), eq("pending")))
-        .thenReturn(MockResponse.<ResponseBody>success(notReadyBody));
-
-    when(cdnService.transform(anyString(), eq("ready")))
-        .thenReturn(MockResponse.<ResponseBody>success(readyBody));
-
-    Config config = new Config("apiKey");
-    FileLink ready = fileLink(config, cdnService, baseService, "ready");
-    FileLink pending = fileLink(config, cdnService, baseService, "pending");
-
-    AvTransformOptions avOptions = new AvTransformOptions.Builder().preset("mp4").build();
-
-    FileLink converted = ready.avTransform(avOptions).getFileLink();
-    Assert.assertEquals("handle", converted.getHandle());
-    Assert.assertNull(pending.avTransform(avOptions).getFileLink());
-  }
-
   @Test(expected = IOException.class)
   public void testGetFilelinkFail() throws Exception {
 

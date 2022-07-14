@@ -126,6 +126,6 @@ class RequestStoringDispatcherTester(private val dispatcher: RequestStoringDispa
 }
 
 fun fileLink(config: Config, cdnService: CdnService, baseService: BaseService, handle: String): FileLink {
-    return FileLink(config, cdnService, baseService, handle)
+    return FileLink(config, cdnService, baseService, handle, "", "", "", 0, "", "");
 }
 

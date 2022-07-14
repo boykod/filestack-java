@@ -90,12 +90,17 @@ public class AvTransform extends Transform {
       case "completed":
         JsonObject data = json.get("data").getAsJsonObject();
         String url = data.get("url").getAsString();
+        String key = data.get("key").getAsString();
+        String mimeType = data.get("mimetype").getAsString();
+        String container = data.get("container").getAsString();
+        String filename = data.get("filename").getAsString();
+        int size = data.get("size").getAsInt();
         // Correcting for error where status is "completed" but fields are empty
         if (url.equals("")) {
           return null;
         }
         String handle = url.split("/")[3];
-        return new FileLink(config, handle);
+        return new FileLink(config, handle, key, url, mimeType, size, container, filename);
       default:
         throw new IOException("Unexpected transform error: " + json.toString());
     }

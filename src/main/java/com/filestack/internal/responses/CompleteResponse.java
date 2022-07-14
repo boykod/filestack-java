@@ -8,6 +8,7 @@ public class CompleteResponse {
   private String filename;
   private long size;
   private String mimetype;
+  private String key;
 
   public String getUrl() {
     return url;
@@ -27,5 +28,9 @@ public class CompleteResponse {
 
   public String getMimetype() {
     return mimetype;
+  }
+
+  public String getKey() {
+    return key;
   }
 }

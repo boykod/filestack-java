@@ -94,9 +94,15 @@ public class ImageTransform extends Transform {
     if (body == null) {
       throw new IOException();
     }
-
     String handle = body.getUrl().split("/")[3];
-    return new FileLink(config, handle);
+    return new FileLink(config,
+            handle,
+            body.getKey(),
+            body.getUrl(),
+            body.getType(),
+            body.getSize(),
+            body.getContainer(),
+            body.getFilename());
   }
 
   /**

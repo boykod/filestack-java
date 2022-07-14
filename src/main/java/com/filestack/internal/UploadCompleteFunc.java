@@ -50,7 +50,15 @@ public class UploadCompleteFunc implements Callable<Prog> {
     };
 
     CompleteResponse response = func.call();
-    FileLink fileLink = new FileLink(upload.clientConf, response.getHandle());
+    FileLink fileLink = new FileLink(
+            upload.clientConf,
+            response.getHandle(),
+            response.getKey(),
+            response.getUrl(),
+            response.getMimetype(),
+            (int)response.getSize(),
+            params.get("store_container").toString(),
+            response.getFilename());
 
     long endTime = System.currentTimeMillis() / 1000;
     return new Prog(startTime, endTime, fileLink);
