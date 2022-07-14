@@ -1,24 +1,21 @@
 buildscript {
-    ext.kotlin_version = '1.5.31'
+    ext.kotlin_version = '1.2.70'
     repositories {
-        google()
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
-
     }
 }
 plugins {
     id 'com.github.kt3k.coveralls' version '2.6.3'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 apply plugin: 'checkstyle'
 apply plugin: 'kotlin'
 apply plugin: 'jacoco'
 apply plugin: 'java-library'
-apply plugin: 'de.fuerstenau.buildconfig'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
@@ -42,38 +39,36 @@ dependencies {
 
 }
 
-// Add generated build-config directories to the main source set, so that the
-// IDE doesn't complain when the app references BuildConfig classes
-sourceSets.main.java {
-    srcDir new File(buildDir, 'gen/buildconfig')
-}
-
-buildConfig {
-    version = project.version // sets value of VERSION field,
-    clsName = 'FilestackBuildConfig'
-    packageName = project.group
-}
-
 javadoc {
     destinationDir new File("./docs")
     options.optionFiles(new File('./config/javadoc/javadoc.txt'))
 }
 
 // Publications define artifacts to upload to Bintray
-//publishing {
-//    publications {
-//        Maven(MavenPublication) {
-//            from components.java
-//            artifact sourcesJar
-//            artifact javadocJar
-//        }
-//    }
-//}
-
-repositories {
-    mavenCentral()
+publishing {
+    publications {
+        Maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }
 
+repositories {
+    jcenter()
+}
+
+// Output version to version.properties file
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
 
 // Create javadoc artifact jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -87,42 +82,44 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+classes.dependsOn createProperties // Create version.properties as part of build
+
 tasks.withType(Test) { // Put unit and integration test reports in separate directories
     reports.html.destination = file("${reporting.baseDir}/${name}")
 }
 
 // *************************************** Plugin Config ******************************************
 
-//bintray {
-//    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser')
-//            : System.getenv('BINTRAY_USER')
-//    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey')
-//            : System.getenv('BINTRAY_API_KEY')
-//    publications = ['Maven']
-//    publish = true
-//    pkg {
-//        repo = 'maven'
-//        userOrg = 'filestack'
-//        name = 'filestack-java'
-//        desc = 'Official Java SDK for Filestack.'
-//
-//        publicDownloadNumbers = true
-//        licenses = ['Apache-2.0']
-//
-//        websiteUrl = 'https://filestack.com'
-//        vcsUrl = 'https://github.com/filestack/filestack-java.git'
-//        issueTrackerUrl = 'https://github.com/filestack/filestack-java/issues'
-//
-//        githubRepo = 'filestack/filestack-java'
-//        githubReleaseNotesFile = 'CHANGELOG.md'
-//
-//        version {
-//            name = project.version
-//            vcsTag = project.version
-//            released = new Date()
-//        }
-//    }
-//}
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser')
+            : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey')
+            : System.getenv('BINTRAY_API_KEY')
+    publications = ['Maven']
+    publish = true
+    pkg {
+        repo = 'maven'
+        userOrg = 'filestack'
+        name = 'filestack-java'
+        desc = 'Official Java SDK for Filestack.'
+
+        publicDownloadNumbers = true
+        licenses = ['Apache-2.0']
+
+        websiteUrl = 'https://filestack.com'
+        vcsUrl = 'https://github.com/filestack/filestack-java.git'
+        issueTrackerUrl = 'https://github.com/filestack/filestack-java/issues'
+
+        githubRepo = 'filestack/filestack-java'
+        githubReleaseNotesFile = 'CHANGELOG.md'
+
+        version {
+            name = project.version
+            vcsTag = project.version
+            released = new Date()
+        }
+    }
+}
 
 checkstyle {
     toolVersion '8.1'

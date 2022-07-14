@@ -96,6 +96,26 @@ public class FileLink implements Serializable {
     this.filename = filename;
   }
 
+  public String getUrl() {
+    return url;
+  }
+
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public String getContainer() {
+    return container;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
   /**
    * Returns the content of a file.
    *
