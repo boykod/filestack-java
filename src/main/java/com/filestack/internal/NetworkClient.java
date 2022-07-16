@@ -43,9 +43,8 @@ public class NetworkClient {
   }
 
   void cancel() {
-    if (currentCall != null) {
-      currentCall.cancel();
-      currentCall = null;
+    for (okhttp3.Call call : client.dispatcher().queuedCalls()) {
+      call.cancel();
     }
   }
 }
