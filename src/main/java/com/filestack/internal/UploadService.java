@@ -118,4 +118,8 @@ public class UploadService {
 
     return multiPartBuilder.build();
   }
+
+  public void cancel() {
+    networkClient.cancel();
+  }
 }

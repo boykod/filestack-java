@@ -372,6 +372,10 @@ public class Client implements Serializable {
     });
   }
 
+  public void cancel() {
+    uploadService.cancel();
+  }
+
   /**
    * Asynchronously logs out from specified cloud.
    *

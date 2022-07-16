@@ -11,6 +11,7 @@ public class NetworkClient {
 
   private final OkHttpClient client;
   private final Gson gson;
+  private okhttp3.Call currentCall;
 
   public NetworkClient(OkHttpClient okHttpClient, Gson gson) {
     this.client = okHttpClient;
@@ -18,7 +19,8 @@ public class NetworkClient {
   }
 
   <T> Response<T> call(Request request, Class<T> resultClass) throws IOException {
-    okhttp3.Response response = client.newCall(request).execute();
+    currentCall = client.newCall(request);
+    okhttp3.Response response = currentCall.execute();
     if (!response.isSuccessful()) {
       return Response.error(response);
     }
@@ -32,11 +34,18 @@ public class NetworkClient {
   }
 
   Response<ResponseBody> call(Request request) throws IOException {
-    okhttp3.Response response = client.newCall(request).execute();
+    currentCall = client.newCall(request);
+    okhttp3.Response response = currentCall.execute();
     if (response.isSuccessful()) {
       return Response.success(response.body(), response);
     }
     return Response.error(response);
   }
 
+  void cancel() {
+    if (currentCall != null) {
+      currentCall.cancel();
+      currentCall = null;
+    }
+  }
 }
