@@ -40,9 +40,6 @@ public class NetworkClient {
   }
 
   void cancel() {
-    for (okhttp3.Call call : client.dispatcher().runningCalls()) {
-      call.cancel();
-    }
-    client.dispatcher().runningCalls().clear();
+    client.dispatcher().cancelAll();
   }
 }
