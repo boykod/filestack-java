@@ -34,10 +34,9 @@ public class UploadTransferFunc implements FlowableOnSubscribe<Prog> {
   public void subscribe(FlowableEmitter<Prog> e) throws Exception {
     emitter = e;
     container = new PartContainer(upload.partSize);
-    int containerSize = upload.readInput(container);
 
-    while (containerSize != -1) {
-      System.out.println("FS-JAVA: UploadTransferFunc: while (containerSize != -1)" + containerSize);
+    while (upload.readInput(container) != -1) {
+      System.out.println("FS-JAVA: UploadTransferFunc: while (containerSize != -1)");
       while (container.sent != container.size) {
         System.out.println("FS-JAVA: UploadTransferFunc: while(container.sent != container.size)" + container.sent + " " + container.size);
         uploadToS3();
