@@ -44,6 +44,8 @@ public class Upload {
   private int chunkSize;
   private int partIndex;
 
+  private Flowable<Prog> startFlow;
+
   private Flowable<Prog> transferFlow = Flowable.empty();;
   private Flowable<Prog> completeFlow;
 
@@ -125,9 +127,9 @@ public class Upload {
    * @return {@link Flowable} that emits {@link Progress} events
    */
   public Flowable<Progress<FileLink>> run() {
-//    Flowable<Prog> startFlow = Flowable
-//        .fromCallable(new UploadStartFunc(uploadService, this))
-//        .subscribeOn(Schedulers.io());
+    startFlow = Flowable
+        .fromCallable(new UploadStartFunc(uploadService, this))
+        .subscribeOn(Schedulers.io());
 
     // Create multiple func instances to each upload a subrange of parts from the file
     // Merge each of these together into one so they're executed concurrently
@@ -150,6 +152,7 @@ public class Upload {
   }
 
   public void cancel() {
+    startFlow = null;
     transferFlow = null;
     completeFlow = null;
   }
