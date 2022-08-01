@@ -36,8 +36,10 @@ public class Client implements Serializable {
   private final BaseService baseService;
   private final CloudService cloudService;
   protected final Config config;
-  
+
   private String sessionToken;
+
+  private Upload upload;
 
   /**
    * Basic constructor for Client class.
@@ -303,8 +305,14 @@ public class Client implements Serializable {
       opts = new StorageOptions.Builder().build();
     }
 
-    Upload upload = new Upload(config, uploadService, input, size, intel, opts);
+    upload = new Upload(config, uploadService, input, size, intel, opts);
     return upload.run();
+  }
+
+  public void cancelUploadAsync() {
+    if (upload != null) {
+      upload.cancel();
+    }
   }
 
   /**

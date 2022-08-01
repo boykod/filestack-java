@@ -6,6 +6,7 @@ import com.filestack.Progress;
 import com.filestack.StorageOptions;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -42,6 +43,9 @@ public class Upload {
   private final InputStream input;
   private int chunkSize;
   private int partIndex;
+
+  private Flowable<Prog> transferFlow = Flowable.empty();;
+  private Flowable<Prog> completeFlow;
 
   /** Constructs new instance. */
   public Upload(Config clientConf, UploadService uploadService, InputStream input, int inputSize, boolean intel,
@@ -121,13 +125,13 @@ public class Upload {
    * @return {@link Flowable} that emits {@link Progress} events
    */
   public Flowable<Progress<FileLink>> run() {
-    Flowable<Prog> startFlow = Flowable
-        .fromCallable(new UploadStartFunc(uploadService, this))
-        .subscribeOn(Schedulers.io());
+//    Flowable<Prog> startFlow = Flowable
+//        .fromCallable(new UploadStartFunc(uploadService, this))
+//        .subscribeOn(Schedulers.io());
 
     // Create multiple func instances to each upload a subrange of parts from the file
     // Merge each of these together into one so they're executed concurrently
-    Flowable<Prog> transferFlow = Flowable.empty();
+//    Flowable<Prog> transferFlow = Flowable.empty();
     for (int i = 0; i < CONCURRENCY; i++) {
       UploadTransferFunc func = new UploadTransferFunc(uploadService, this);
       Flowable<Prog> temp = Flowable
@@ -140,9 +144,13 @@ public class Upload {
         .fromCallable(new UploadCompleteFunc(uploadService, this))
         .subscribeOn(Schedulers.io());
 
-    return startFlow
-        .concatWith(transferFlow)
+    return transferFlow
         .concatWith(completeFlow)
         .flatMap(new ProgMapFunc(this));
+  }
+
+  public void cancel() {
+    transferFlow = null;
+    completeFlow = null;
   }
 }
