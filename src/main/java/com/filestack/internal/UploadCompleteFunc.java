@@ -41,7 +41,7 @@ public class UploadCompleteFunc implements Callable<Prog> {
     }
 
     RetryNetworkFunc<CompleteResponse> func;
-    func = new RetryNetworkFunc<CompleteResponse>(5, 5, Upload.DELAY_BASE) {
+    func = new RetryNetworkFunc<CompleteResponse>(5, 0, Upload.DELAY_BASE) {
 
       @Override
       Response<CompleteResponse> work() throws Exception {
