@@ -29,6 +29,7 @@ public class UploadService {
   }
 
   public Response<StartResponse> start(Map<String, RequestBody> parameters) throws IOException {
+    System.out.println("FS-JAVA: UploadService: start");
     HttpUrl url = apiUrl.newBuilder()
         .addPathSegment("multipart")
         .addPathSegment("start")
@@ -37,12 +38,14 @@ public class UploadService {
     Request request = new Request.Builder()
         .url(url)
         .post(buildMultipartBody(parameters))
+            .tag("start")
         .build();
 
     return networkClient.call(request, StartResponse.class);
   }
 
   public Response<UploadResponse> upload(Map<String, RequestBody> parameters) throws IOException {
+    System.out.println("FS-JAVA: UploadService: upload");
     HttpUrl url = apiUrl.newBuilder()
         .addPathSegment("multipart")
         .addPathSegment("upload")
@@ -51,12 +54,14 @@ public class UploadService {
     Request request = new Request.Builder()
         .url(url)
         .post(buildMultipartBody(parameters))
+            .tag("upload")
         .build();
 
     return networkClient.call(request, UploadResponse.class);
   }
 
   public Response<ResponseBody> uploadS3(Map<String, String> headers, String url, RequestBody body) throws IOException {
+    System.out.println("FS-JAVA: UploadService: uploadToS3");
     HttpUrl s3Url = HttpUrl.parse(url);
     if (s3Url == null) {
       throw new IOException("Invalid S3 url: " + url);
@@ -71,6 +76,7 @@ public class UploadService {
         .url(s3Url)
         .headers(headersBuilder.build())
         .put(body)
+            .tag("uploadS3")
         .build();
 
     return networkClient.call(request);
@@ -85,6 +91,7 @@ public class UploadService {
     Request request = new Request.Builder()
         .url(url)
         .post(buildMultipartBody(parameters))
+            .tag("commit")
         .build();
 
     return networkClient.call(request);
@@ -99,6 +106,7 @@ public class UploadService {
     Request request = new Request.Builder()
         .url(url)
         .post(buildMultipartBody(parameters))
+            .tag("complete")
         .build();
 
     return networkClient.call(request, CompleteResponse.class);

@@ -71,6 +71,7 @@ public class UploadTransferFunc implements FlowableOnSubscribe<Prog> {
 
   /** Upload chunk/part to S3. */
   private void uploadToS3() throws Exception {
+    System.out.println("FS-JAVA: UploadTransferFunc: uploadToS3");
     RetryNetworkFunc<ResponseBody> func;
 
     func = new RetryNetworkFunc<ResponseBody>(5, 5, Upload.DELAY_BASE) {
