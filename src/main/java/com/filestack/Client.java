@@ -309,7 +309,9 @@ public class Client implements Serializable {
     return upload.run();
   }
 
-  public void cancelUploadAsync() {
+  public void cancelUpload() {
+    uploadService.cancel();
+
     if (upload != null) {
       upload.cancel();
       upload = null;
@@ -379,10 +381,6 @@ public class Client implements Serializable {
         return storeCloudItem(providerName, path, options);
       }
     });
-  }
-
-  public void cancel() {
-    uploadService.cancel();
   }
 
   /**

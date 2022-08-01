@@ -45,8 +45,7 @@ public class Upload {
   private int partIndex;
 
   private Flowable<Prog> startFlow;
-
-  private Flowable<Prog> transferFlow = Flowable.empty();;
+  private Flowable<Prog> transferFlow = Flowable.empty();
   private Flowable<Prog> completeFlow;
 
   /** Constructs new instance. */
@@ -92,7 +91,6 @@ public class Upload {
    */
   synchronized int readInput(PartContainer container) throws IOException {
     if (transferFlow == null) {
-      System.out.println("FS-JAVA: Upload: readInput (transferFlow == null)");
       return -1;
     }
 
@@ -101,7 +99,6 @@ public class Upload {
     container.sent = 0;
     partIndex++;
 
-    System.out.println("FS-JAVA: Upload: readInput" + container.size);
     return container.size;
   }
 
@@ -140,7 +137,6 @@ public class Upload {
 
     // Create multiple func instances to each upload a subrange of parts from the file
     // Merge each of these together into one so they're executed concurrently
-//    Flowable<Prog> transferFlow = Flowable.empty();
     for (int i = 0; i < CONCURRENCY; i++) {
       UploadTransferFunc func = new UploadTransferFunc(uploadService, this);
       Flowable<Prog> temp = Flowable
@@ -159,6 +155,9 @@ public class Upload {
         .flatMap(new ProgMapFunc(this));
   }
 
+  /**
+   * Cancel uploading. Set all flowable to null.
+   * */
   public void cancel() {
     startFlow = null;
     transferFlow = null;
