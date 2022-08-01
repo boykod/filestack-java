@@ -11,6 +11,8 @@ import okhttp3.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
+
 /**
  * Function to be passed to {@link Flowable#create(FlowableOnSubscribe, BackpressureStrategy)}.
  * This class handles uploading of parts/chunks and makes calls to both S3 and Filestack endpoints.
@@ -32,9 +34,12 @@ public class UploadTransferFunc implements FlowableOnSubscribe<Prog> {
   public void subscribe(FlowableEmitter<Prog> e) throws Exception {
     emitter = e;
     container = new PartContainer(upload.partSize);
+    int containerSize = upload.readInput(container);
 
-    while (upload.readInput(container) != -1) {
+    while (containerSize != -1) {
+      System.out.println("FS-JAVA: UploadTransferFunc: while (containerSize != -1)" + containerSize);
       while (container.sent != container.size) {
+        System.out.println("FS-JAVA: UploadTransferFunc: while(container.sent != container.size)" + container.sent + " " + container.size);
         uploadToS3();
       }
       if (upload.intel) {
