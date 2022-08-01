@@ -91,6 +91,10 @@ public class Upload {
    * collection down.
    */
   synchronized int readInput(PartContainer container) throws IOException {
+    if (transferFlow == null) {
+      return -1;
+    }
+
     container.num = partIndex;
     container.size = input.read(container.data);
     container.sent = 0;
