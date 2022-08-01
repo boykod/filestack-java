@@ -140,7 +140,7 @@ public class Upload {
       transferFlow = transferFlow.mergeWith(temp);
     }
 
-    Flowable<Prog> completeFlow = Flowable
+    completeFlow = Flowable
         .fromCallable(new UploadCompleteFunc(uploadService, this))
         .subscribeOn(Schedulers.io());
 
