@@ -312,6 +312,7 @@ public class Client implements Serializable {
   public void cancelUploadAsync() {
     if (upload != null) {
       upload.cancel();
+      upload = null;
     }
   }
 
