@@ -146,7 +146,8 @@ public class Upload {
         .fromCallable(new UploadCompleteFunc(uploadService, this))
         .subscribeOn(Schedulers.io());
 
-    return transferFlow
+    return startFlow
+        .concatWith(transferFlow)
         .concatWith(completeFlow)
         .flatMap(new ProgMapFunc(this));
   }
