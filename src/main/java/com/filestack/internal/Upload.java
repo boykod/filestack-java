@@ -92,6 +92,7 @@ public class Upload {
    */
   synchronized int readInput(PartContainer container) throws IOException {
     if (transferFlow == null) {
+      System.out.println("FS-JAVA: Upload: readInput (transferFlow == null)");
       return -1;
     }
 
@@ -99,6 +100,8 @@ public class Upload {
     container.size = input.read(container.data);
     container.sent = 0;
     partIndex++;
+
+    System.out.println("FS-JAVA: Upload: readInput" + container.size);
     return container.size;
   }
 
